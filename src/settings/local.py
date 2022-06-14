@@ -23,7 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'django.contrib.gis',
+    'django.contrib.gis',
     # 3rd Party Apps
     'corsheaders',
     'django_countries',
@@ -33,8 +33,9 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'rest_framework',
     'djmoney',
-    # 'rest_framework_gis',
+    'rest_framework_gis',
     'rest_framework_simplejwt.token_blacklist',
+    'leaflet',
     # local Apps
     'api.apps.ApiConfig',
     'transport.apps.TransportConfig',

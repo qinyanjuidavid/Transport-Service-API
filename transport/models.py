@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 from django.contrib.auth.validators import UnicodeUsernameValidator
 # from languages.fields import LanguageField
 from djmoney.models.fields import MoneyField
-# from django.contrib.gis.db import models as gismodels
+from django.contrib.gis.db import models as gis_models
 
 
 class TrackingModel(models.Model):
@@ -18,16 +18,8 @@ class TrackingModel(models.Model):
 
 
 class Provider(TrackingModel):
-    username_validator = UnicodeUsernameValidator()
     name = models.CharField(
-        _('name'),
-        max_length=150,
-        unique=True,
-        validators=[username_validator],
-        error_messages={
-            'unique': _("A user with that name already exists."),
-        },
-    )
+        _('name'), max_length=150)
     email = models.EmailField(_('email address'), unique=True, error_messages={
         'unique': ('A user with that email already exists.'),
     })
@@ -37,10 +29,13 @@ class Provider(TrackingModel):
     language = models.CharField(_("language"), blank=True, max_length=40,
                                 null=True)
     # language=LanguageField(_('language'), blank=True, null=True)
-    currency = MoneyField(
-        max_digits=10, decimal_places=2,
-        null=True,
-        default_currency=None)
+    # currency = MoneyField(
+    #     max_digits=10, decimal_places=2,
+    #     null=True,
+    #     default_currency=None)
+    currency = models.CharField(
+        _('currency'), max_length=57,
+        default="USD")
 
     class Meta:
         verbose_name = 'provider'
@@ -54,12 +49,11 @@ class Provider(TrackingModel):
 class ServiceArea(TrackingModel):
     # Assuming that one Service area has one provider
     provider = models.OneToOneField(Provider,
-                                    on_delete=models.DO_NOTHING,
-                                    )
+                                    on_delete=models.DO_NOTHING,)
     name = models.CharField(_('name of service area'),
-                            max_length=150)
+                            max_length=150, unique=True)
     price = models.FloatField(_('price'), default=0.00)
-    # geom = gis_models.MultiPolygonField(blank=True, null=True)
+    geom = gis_models.MultiPolygonField(blank=True, null=True)
 
     class Meta:
         verbose_name = 'service area'
