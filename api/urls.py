@@ -9,6 +9,7 @@ routes = SimpleRouter()
 
 routes.register('provider', ProviderAPIView,
                 basename="provider")
+# To access the action methods use servicearea/{action name}
 routes.register('servicearea', ServiceAreaAPIView,
                 basename="servicearea")
 

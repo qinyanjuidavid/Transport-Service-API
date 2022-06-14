@@ -5,10 +5,14 @@ from transport.models import Provider, ServiceArea
 import pdb
 from django.contrib.gis.geos import Polygon, MultiPolygon
 from rest_framework.reverse import reverse
+from django.contrib.sites.shortcuts import get_current_site
+from django.test.client import RequestFactory
+from django.test import Client
 
 
 class TestSetUp(APITestCase):
     def setUp(self):
+        # Create polygons and pass them as a list in the multipolygon
         self.p1 = Polygon(((0.0, 0.0), (0.0, 50.0),
                            (50.0, 50.0), (50.0, 0.0),
                            (0.0, 0.0)))
@@ -29,6 +33,7 @@ class TestSetUp(APITestCase):
         }
         return super().setUp()
 
+    # Ensure the db rolls back to it's initial state
     def tearDown(self) -> None:
         return super().tearDown()
 
@@ -127,6 +132,7 @@ class test_provider_view(TestSetUp):
 
 
 class test_service_area_view(TestSetUp):
+
     def test_service_area_list(self):
         service_area = ServiceArea.objects.create(
             provider=Provider.objects.create(
@@ -227,23 +233,43 @@ class test_service_area_view(TestSetUp):
         self.assertEqual(res.status_code, 204)
         self.assertEqual(ServiceArea.objects.count(), 0)
 
-    # def test_can_get_service_area_list_by_provider(self):
-    #     provider = Provider.objects.create(
-    #         name=self.data["name"],
-    #         email=self.data["email"],
-    #         phone=self.data["phone"],
-    #         language=self.data["language"],
-    #         currency=self.data["currency"]
-    #     )
-    #     service_area = ServiceArea.objects.create(
-    #         provider=provider,
-    #         name=self.data["areaName"],
-    #         price=self.data["price"],
-    #         geom=self.data["geom"]
-    #     )
-    #     res = self.client.get(reverse(
-    #         "api:provider-get_service_area"))
+    def test_can_get_service_area_list_by_provider(self):
+        provider = Provider.objects.create(
+            name=self.data["name"],
+            email=self.data["email"],
+            phone=self.data["phone"],
+            language=self.data["language"],
+            currency=self.data["currency"]
+        )
+        service_area = ServiceArea.objects.create(
+            provider=provider,
+            name=self.data["areaName"],
+            price=self.data["price"],
+            geom=self.data["geom"]
+        )
 
-        # view.reverse_action("api:servicearea-list",)
-        # self.assertEqual(res.status_code, 200)
-        # self.assertEqual(len(res.data), 1)
+        res = self.client.get(
+            "/api/v1/servicearea/filterServiceArea/?lat=1&lng=1")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.data), 2)
+        self.assertEqual(ServiceArea.objects.count(), 1)
+
+    def test_empty_service_area_list(self):
+        provider = Provider.objects.create(
+            name=self.data["name"],
+            email=self.data["email"],
+            phone=self.data["phone"],
+            language=self.data["language"],
+            currency=self.data["currency"]
+        )
+        service_area = ServiceArea.objects.create(
+            provider=provider,
+            name=self.data["areaName"],
+            price=self.data["price"],
+            geom=self.data["geom"]
+        )
+        res = self.client.get(
+            "/api/v1/servicearea/filterServiceArea/")
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.data["message"],
+                         "Please provide latitude and longitude")

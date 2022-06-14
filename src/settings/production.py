@@ -4,16 +4,6 @@ from src.settings.local import *
 
 DEBUG = False
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': os.environ.get('SQL_ENGINE', 'django.db.backends.postgresql_psycopg2'),
-#         'NAME': os.environ.get('PRODUCTION_DATABASE_NAME', 'tabibu'),
-#         'USER': os.environ.get('DATABASE_USER', 'tabibu'),
-#         'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'tabibu'),
-#         'HOST': os.environ.get('DATABASE_HOST', 'localhost'),
-#         'PORT': '5432'
-#     }
-# }
 GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')
 GEOS_LIBRARY_PATH = os.environ.get('GEOS_LIBRARY_PATH')
 

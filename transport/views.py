@@ -1,3 +1,5 @@
+from transport.serializers import ProviderSerializer, ServiceAreaSerializer
+from transport.models import Provider, ServiceArea
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
 from rest_framework import status
@@ -7,9 +9,6 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from django.contrib.gis.geos import GEOSGeometry, Point
-
-from transport.models import Provider, ServiceArea
-from transport.serializers import ProviderSerializer, ServiceAreaSerializer
 
 
 class ProviderAPIView(ModelViewSet):
@@ -103,7 +102,7 @@ class ServiceAreaAPIView(ModelViewSet):
         )
 
     @action(detail=False, methods=['get'], url_name="get_service_area")
-    def get_service_area(self, request):
+    def filterServiceArea(self, request):
         lat = request.query_params.get('lat', None)
         lng = request.query_params.get('lng', None)
         # If lat and lng are not Null
@@ -111,14 +110,21 @@ class ServiceAreaAPIView(ModelViewSet):
             lat = float(lat)
             lng = float(lng)
             point = Point(lat, lng, srid=4326)
-            print(point)
             serviceArea = ServiceArea.objects.filter(
                 geom__contains=point)
             print(serviceArea)
-            serializer = self.get_serializer(serviceArea, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            # Check is the point provided is in any service area
+            if serviceArea.exists():
+                serializer = self.get_serializer(serviceArea, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            # If point not available notify the user
+            else:
+                return Response(
+                    {'message': 'The latitude and longitude  provided is not in any service area.'},
+                    status=status.HTTP_200_OK
+                )
         # Else we return a message requesting for lat and lng
         return Response(
-            {'message': 'Please provide lat and lng'},
+            {'message': 'Please provide latitude and longitude'},
             status=status.HTTP_400_BAD_REQUEST
         )
