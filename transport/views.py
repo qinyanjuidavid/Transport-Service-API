@@ -110,7 +110,7 @@ class ServiceAreaAPIView(ModelViewSet):
         if lat and lng:
             lat = float(lat)
             lng = float(lng)
-            point = Point(float(lat), float(lng), srid=4326)
+            point = Point(lat, lng, srid=4326)
             print(point)
             serviceArea = ServiceArea.objects.filter(
                 geom__contains=point)
