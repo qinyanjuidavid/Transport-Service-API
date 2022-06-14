@@ -4,14 +4,25 @@ from src.settings.local import *
 
 DEBUG = False
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': os.environ.get('SQL_ENGINE', 'django.db.backends.postgresql_psycopg2'),
+#         'NAME': os.environ.get('PRODUCTION_DATABASE_NAME', 'tabibu'),
+#         'USER': os.environ.get('DATABASE_USER', 'tabibu'),
+#         'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'tabibu'),
+#         'HOST': os.environ.get('DATABASE_HOST', 'localhost'),
+#         'PORT': '5432'
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get('SQL_ENGINE', 'django.db.backends.postgresql_psycopg2'),
-        'NAME': os.environ.get('PRODUCTION_DATABASE_NAME', 'tabibu'),
-        'USER': os.environ.get('DATABASE_USER', 'tabibu'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'tabibu'),
-        'HOST': os.environ.get('DATABASE_HOST', 'localhost'),
-        'PORT': '5432'
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'MozioInterview',
+        'USER': 'postgres',
+        'PASSWORD': 'letmein20116199623',
+        'HOST': 'localhost',
+        'PORT': 5432
     }
 }
 

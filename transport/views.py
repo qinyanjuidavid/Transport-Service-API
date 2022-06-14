@@ -110,16 +110,20 @@ class ServiceAreaAPIView(ModelViewSet):
         if lat and lng:
             lat = float(lat)
             lng = float(lng)
-            point = Point(lat, lng)
-            serviceArea = ServiceArea.objects.get(
-                id=1
-            )
-            print(serviceArea.geom.contains(point))
-            service_area = ServiceArea.objects.filter(
-                geom__contains=point,
-            )
-            print(service_area)
-            serializer = self.get_serializer(service_area, many=True)
+            point = Point(float(lat), float(lng), srid=4326)
+            print(point)
+            serviceArea = ServiceArea.objects.filter(
+                geom__contains=point)
+
+            # serviceArea = ServiceArea.objects.get(
+            #     id=4
+            # )
+            # print(serviceArea.geom)
+            # service_area = ServiceArea.objects.filter(
+            #     geom__contains=point,
+            # )
+            print(serviceArea)
+            serializer = self.get_serializer(serviceArea, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         # Else we return a message requesting for lat and lng
         return Response(
