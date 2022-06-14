@@ -114,14 +114,6 @@ class ServiceAreaAPIView(ModelViewSet):
             print(point)
             serviceArea = ServiceArea.objects.filter(
                 geom__contains=point)
-
-            # serviceArea = ServiceArea.objects.get(
-            #     id=4
-            # )
-            # print(serviceArea.geom)
-            # service_area = ServiceArea.objects.filter(
-            #     geom__contains=point,
-            # )
             print(serviceArea)
             serializer = self.get_serializer(serviceArea, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
