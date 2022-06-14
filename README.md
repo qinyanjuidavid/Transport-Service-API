@@ -9,3 +9,10 @@
 - Create a super user `python manage.py createsuperuser --settings=src.settings.development`
 - Run the server `python manage.py runserver --settings=src.settings.development`
 
+### Testing
+> I used coverage as my test reporting tool
+- coverage run manage.py test
+- coverage html
+- coverage report
+
+
