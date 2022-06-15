@@ -15,7 +15,7 @@ class ProviderSerializer(serializers.ModelSerializer):
 
 
 class ServiceAreaSerializer(GeoFeatureModelSerializer):
-    # provider = ProviderSerializer(read_only=True)
+    provider = ProviderSerializer(read_only=True)
 
     class Meta:
         model = ServiceArea
